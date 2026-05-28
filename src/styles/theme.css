@@ -1,0 +1,298 @@
+/* StaffClock Theme — minimal custom CSS. Everything else is Bootstrap utilities. */
+:root {
+  --sc-dark: #121826;
+  --sc-gold: #ffd54d;
+  --sc-gold-soft: #fff3b3;
+  --sc-bg: #f8fafc;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--sc-bg);
+}
+
+/* ── App Shell ── */
+.app-shell {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.navbar-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  background: var(--sc-gold);
+}
+
+.main-container {
+  flex: 1;
+  display: flex;
+  margin-top: 56px;
+  overflow: hidden;
+}
+
+.sidebar-fixed {
+  width: 260px;
+  background: var(--sc-dark);
+  color: #fff;
+  display: none;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.main-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-scroll {
+  flex: 1;
+  overflow: auto;
+  background: #fff;
+}
+
+@media (min-width: 992px) {
+  .sidebar-fixed {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* ── Sidebar links ── */
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  color: #d1d5db;
+  padding: .55rem .8rem;
+  border-radius: .75rem;
+  text-decoration: none;
+  margin-bottom: .3rem;
+  font-weight: 500;
+  transition: background .15s;
+}
+
+.sidebar-link:hover {
+  color: #fff;
+  background: rgba(255, 213, 77, .18);
+}
+
+.sidebar-link.active {
+  color: #111;
+  background: #ffde73;
+  font-weight: 700;
+}
+
+.sidebar-link i {
+  width: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* ── Page header ── */
+.page-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: linear-gradient(180deg, #fffef8, var(--sc-gold-soft));
+  padding: 1rem 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, .05);
+}
+
+.page-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.page-content {
+  padding: 16px;
+}
+
+/* ── Login pages ── */
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.login-staff {
+  background: var(--sc-dark);
+}
+
+.login-admin {
+  background: #fff9e6;
+}
+
+.login-security {
+  background: #ffe35a;
+}
+
+.login-ceo {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+}
+
+.login-card {
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+  max-width: 500px;
+  width: 100%;
+}
+
+.login-card .card-header {
+  background: linear-gradient(180deg, var(--sc-gold), #ffea99);
+  padding: 2.5rem;
+  border: none;
+  text-align: center;
+}
+
+.login-card .card-body {
+  background: #fffef6;
+}
+
+.login-logo {
+  font-size: 2rem;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.login-title {
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Component tweaks ── */
+.card {
+  border: none;
+  border-radius: .75rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+}
+
+.card-header {
+  background: linear-gradient(135deg, #1f2937, #374151);
+  color: #fff;
+  border: none;
+  padding: .85rem 1.25rem;
+}
+
+.card-header h5,
+.card-header h6,
+.card-header .mb-0 {
+  color: #fff;
+  margin: 0;
+  font-weight: 700;
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, var(--sc-gold), #ffde73);
+  border: none;
+  color: #111;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--sc-gold);
+  box-shadow: 0 0 0 .2rem rgba(255, 213, 77, .25);
+}
+
+.modal-content {
+  border: none;
+  border-radius: .75rem;
+}
+
+.alert {
+  border: none;
+  border-radius: .5rem;
+  font-weight: 500;
+}
+
+.pagination {
+  --bs-pagination-active-bg: var(--sc-gold);
+  --bs-pagination-active-border-color: var(--sc-gold);
+  --bs-pagination-active-color: #111;
+}
+
+.brand-big {
+  font-size: 1.5rem;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.navbar-user-tag {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .45rem .7rem;
+  border: 2px solid #111;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: .5rem;
+  background: #fff;
+  border: 2px solid #111;
+  border-radius: .75rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, .15);
+  z-index: 1000;
+  min-width: 180px;
+}
+
+.user-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  width: 100%;
+  padding: .7rem 1rem;
+  background: none;
+  border: none;
+  font-weight: 600;
+}
+
+.user-dropdown-item:hover {
+  background: var(--sc-gold);
+}
+
+.portal-btn {
+  background: linear-gradient(135deg, #1f2937, #374151);
+  border: 1px solid rgba(255, 255, 255, .1);
+  color: #fff;
+  font-weight: 700;
+  border-radius: .5rem;
+  padding: .45rem .9rem;
+}
+
+.portal-btn:hover {
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 767.98px) {
+  .page-header {
+    padding: .75rem 12px;
+  }
+
+  .page-content {
+    padding: 12px;
+  }
+
+  .page-title {
+    font-size: 1.15rem;
+  }
+}
