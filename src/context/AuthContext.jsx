@@ -9,7 +9,16 @@ export { getFullName, getUserInitials, isCEO, canAccessManagerPortal }
 
 const LEAVE_TYPES = ['Annual', 'Sick', 'Emergency']
 const LANDING = { ceo: '/ceo-dashboard', admin: '/admin-dashboard', security: '/security-dashboard', staff: '/clock' }
-const safe = (promise) => promise.catch(() => ({ data: [] }))
+
+// Wraps a data-load promise so one failed call doesn't break the rest of the page.
+// Logs the failure (so it's visible in DevTools instead of silent) and re-throws
+// auth errors so the global auth handler can clear the session.
+const safe = (label, promise) =>
+  promise.catch((err) => {
+    if (err?.status === 401) throw err
+    console.warn(`[load] ${label} failed:`, err?.message || err)
+    return { data: [] }
+  })
 
 const AuthContext = createContext()
 
@@ -36,47 +45,56 @@ export function AuthProvider({ children }) {
     if (!user || !getToken() || loadingRef.current) return
     loadingRef.current = true
     try {
-      const [deptRes, locRes] = await Promise.all([safe(departmentService.getAll({ limit: 100 })), safe(locationService.getAll({ limit: 100 }))])
+      const [deptRes, locRes] = await Promise.all([
+        safe('departments', departmentService.getAll({ limit: 100 })),
+        safe('locations', locationService.getAll({ limit: 100 })),
+      ])
 
       const deptMap = Object.fromEntries((deptRes.data || []).map(d => [d.id, d]))
       const locMap  = Object.fromEntries((locRes.data || []).map(l => [l.id, l]))
       setDepartments(deptMap)
       setLocations(locMap)
 
-      // Users
       const needsAll = ['admin', 'security'].includes(user.role) || isCEO(user) || user.isManager
       let byEmail = {}, byId = {}
       if (needsAll) {
-        const res = await safe(userService.getAll({ limit: 100 }))
+        const res = await safe('users', userService.getAll({ limit: 100 }))
         for (const u of res.data || []) {
           const norm = normalizeUser(u, { deptMap, locMap })
           byEmail[norm.email] = norm
           byId[norm.id] = norm
         }
-        // Derive isManager from direct reports
         const mgrIds = new Set(Object.values(byId).filter(u => u.managerId).map(u => u.managerId))
         for (const mid of mgrIds) { if (byId[mid]) byId[mid].isManager = true; const e = Object.keys(byEmail).find(k => byEmail[k]?.id === mid); if (e) byEmail[e].isManager = true }
       }
       setAllUsersMap(byEmail); setAllUsersById(byId)
       window.__sc_cache = { usersById: byId, usersByEmail: byEmail, locations: locMap, departments: deptMap }
 
-      // Leaves
       const isPrivileged = user.role === 'admin' || isCEO(user) || user.isManager
-      const leavesRes = await safe(isPrivileged ? leaveService.getAll({ limit: 100 }) : leaveService.getMyLeaves({ limit: 100 }))
+      const leavesRes = await safe('leaves',
+        isPrivileged ? leaveService.getAll({ limit: 100 }) : leaveService.getMyLeaves({ limit: 100 }))
       setRawLeaves(leavesRes.data || [])
 
-      // Attendance
       const isAdmin = user.role === 'admin' || isCEO(user)
-      const attRes = await safe(isAdmin ? attendanceService.getAll({ limit: 100 }) : attendanceService.getMyRecords({ limit: 100 }))
+      const attRes = await safe('attendance',
+        isAdmin ? attendanceService.getAll({ limit: 100 }) : attendanceService.getMyRecords({ limit: 100 }))
       setRawAttendance(attRes.data || [])
 
-      // Sync clock status
       try {
         const s = (await attendanceService.getStatus()).data || {}
         setUser(prev => prev ? { ...prev, isClockedIn: s.status !== 'clocked_out', currentLocationIds: s.attendance?.locationId ? [s.attendance.locationId] : [] } : prev)
-      } catch { /* optional */ }
-    } catch (err) { console.error('Data load failed:', err) }
-    finally { loadingRef.current = false }
+      } catch { /* clock-status sync is best-effort */ }
+    } catch (err) {
+      if (err?.status === 401) {
+        // Session expired or invalid — clear auth and bounce to login.
+        clearAuth()
+        setUser(null)
+      } else {
+        console.error('[load] data load failed:', err)
+      }
+    } finally {
+      loadingRef.current = false
+    }
   }, [user?.id, user?.role, user?.isManager])
 
   useEffect(() => { if (user && getToken()) loadAllData() }, [user?.id, loadAllData])
