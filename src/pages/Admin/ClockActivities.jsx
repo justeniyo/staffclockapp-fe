@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useAuth } from '../../context/AuthContext'
-import { PageHeader, StatRow, DataTable } from '../../components/ui'
+import { PageHeader, StatRow, DataTable, DownloadFilteredButton } from '../../components/ui'
 
 export default function ClockActivities() {
   const { clockActivities, allUsers, locations, saveFilterState, getFilterState } = useAuth()
@@ -74,7 +74,21 @@ export default function ClockActivities() {
         </div>
 
         <div className="card">
-          <div className="card-header"><h6 className="mb-0">Activity Log</h6></div>
+          <div className="card-header d-flex justify-content-between align-items-center">
+            <h6 className="mb-0">Activity Log</h6>
+            <DownloadFilteredButton
+              rows={filtered}
+              filename="clock-activities"
+              columns={[
+                { key: 'timestamp', label: 'Timestamp' },
+                { key: 'staffName', label: 'Staff' },
+                { key: 'staffEmail', label: 'Email' },
+                { key: 'department', label: 'Department' },
+                { key: 'action', label: 'Action' },
+                { key: 'location', label: 'Location' },
+              ]}
+            />
+          </div>
           <DataTable data={filtered} columns={columns} defaultSort={{ key: 'timestamp', dir: 'desc' }} emptyIcon="fa-search" emptyText="No activities found." onClear={clearFilters} />
         </div>
       </div>

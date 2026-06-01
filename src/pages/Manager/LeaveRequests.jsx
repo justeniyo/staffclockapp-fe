@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useAuth } from '../../context/AuthContext'
-import { PageHeader, DataTable, ConfirmModal } from '../../components/ui'
+import { PageHeader, DataTable, ConfirmModal, DownloadFilteredButton } from '../../components/ui'
 
 export default function LeaveRequests() {
   const { leaveRequests, processLeaveRequest, user, allUsers, saveFilterState, getFilterState } = useAuth()
@@ -58,7 +58,25 @@ export default function LeaveRequests() {
             <div className="col-lg-5"><div className="input-group"><input type="date" className="form-control" value={filters.dateFrom} onChange={e => setFilter('dateFrom', e.target.value)} /><span className="input-group-text">to</span><input type="date" className="form-control" value={filters.dateTo} onChange={e => setFilter('dateTo', e.target.value)} /></div></div>
           </div></div>
         </div>
-        <div className="card"><div className="card-header"><h6 className="mb-0">Leave Requests</h6></div>
+        <div className="card"><div className="card-header d-flex justify-content-between align-items-center">
+            <h6 className="mb-0">Leave Requests</h6>
+            <DownloadFilteredButton
+              rows={filtered}
+              filename="leave-requests"
+              columns={[
+                { key: 'staffName', label: 'Employee' },
+                { key: 'department', label: 'Department' },
+                { key: 'type', label: 'Type' },
+                { key: 'startDate', label: 'Start Date' },
+                { key: 'endDate', label: 'End Date' },
+                { key: 'status', label: 'Status' },
+                { key: 'reason', label: 'Reason' },
+                { key: 'processedByName', label: 'Reviewed By' },
+                { key: 'processedDate', label: 'Reviewed At' },
+                { key: 'processingNotes', label: 'Review Notes' },
+              ]}
+            />
+          </div>
           <DataTable data={filtered} columns={columns} defaultSort={{ key: 'requestDate', dir: 'desc' }} emptyIcon="fa-calendar-times" emptyText="No leave requests found." onClear={clearFilters} />
         </div>
 

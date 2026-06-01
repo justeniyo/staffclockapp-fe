@@ -8,13 +8,12 @@ const authService = {
   },
 
   async signup(payload) {
-    // payload: { email, password, firstName, lastName }
-    const data = await api.post('/auth/signup', payload);
-    return data;
+    return api.post('/auth/signup', payload);
   },
 
-  async verifyEmail(token) {
-    return api.get(`/auth/verify-email?token=${token}`);
+  // OTP-based verification: { email, otp }
+  async verifyEmail(email, otp) {
+    return api.post('/auth/verify-email', { email, otp });
   },
 
   async resendVerification(email) {
@@ -25,8 +24,13 @@ const authService = {
     return api.post('/auth/forgot-password', { email });
   },
 
-  async resetPassword(token, password) {
-    return api.post('/auth/reset-password', { token, password });
+  // Optional: pre-check the OTP without setting a new password yet.
+  async verifyResetOtp(email, otp) {
+    return api.post('/auth/verify-reset-otp', { email, otp });
+  },
+
+  async resetPassword(email, otp, password) {
+    return api.post('/auth/reset-password', { email, otp, password });
   },
 
   async getProfile() {
@@ -34,7 +38,7 @@ const authService = {
   },
 
   async changePassword(currentPassword, newPassword) {
-    return api.put('/auth/password', { currentPassword, newPassword });
+    return api.put('/auth/password', { currentPassword, newPassword, confirmPassword: newPassword });
   },
 
   async verifyToken() {

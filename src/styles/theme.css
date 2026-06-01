@@ -1,4 +1,4 @@
-/* StaffClock Theme — minimal custom CSS. Everything else is Bootstrap utilities. */
+/* StaffClock theme. Minimal custom CSS layered on Bootstrap utilities. */
 :root {
   --sc-dark: #121826;
   --sc-gold: #ffd54d;
@@ -17,7 +17,7 @@ body {
   background: var(--sc-bg);
 }
 
-/* ── App Shell ── */
+/* App Shell */
 .app-shell {
   height: 100vh;
   display: flex;
@@ -70,7 +70,7 @@ body {
   }
 }
 
-/* ── Sidebar links ── */
+/* Sidebar links */
 .sidebar-link {
   display: flex;
   align-items: center;
@@ -99,7 +99,7 @@ body {
   flex-shrink: 0;
 }
 
-/* ── Page header ── */
+/* Page header */
 .page-header {
   position: sticky;
   top: 0;
@@ -119,7 +119,7 @@ body {
   padding: 16px;
 }
 
-/* ── Login pages ── */
+/* Login pages */
 .login-page {
   min-height: 100vh;
   display: grid;
@@ -174,7 +174,7 @@ body {
   margin-bottom: 1rem;
 }
 
-/* ── Component tweaks ── */
+/* Component tweaks */
 .card {
   border: none;
   border-radius: .75rem;
@@ -199,6 +199,12 @@ body {
 .btn-warning {
   background: linear-gradient(135deg, var(--sc-gold), #ffde73);
   border: none;
+  color: #111;
+  font-weight: 600;
+}
+
+.btn-warning:hover {
+  background: linear-gradient(135deg, #ffd133, #ffd454);
   color: #111;
 }
 
@@ -225,10 +231,17 @@ body {
   --bs-pagination-active-color: #111;
 }
 
+/* Navbar / user dropdown — high contrast against gold background */
 .brand-big {
   font-size: 1.5rem;
   font-weight: 900;
   font-style: italic;
+  color: #111;
+}
+
+.brand-big:hover,
+.brand-big:focus {
+  color: #111;
 }
 
 .navbar-user-tag {
@@ -239,6 +252,12 @@ body {
   border: 2px solid #111;
   border-radius: 9999px;
   cursor: pointer;
+  color: #111;
+  font-weight: 600;
+}
+
+.navbar-user-tag i {
+  color: #111;
 }
 
 .user-dropdown {
@@ -263,24 +282,17 @@ body {
   background: none;
   border: none;
   font-weight: 600;
+  color: #111;
+  text-align: left;
 }
 
 .user-dropdown-item:hover {
   background: var(--sc-gold);
+  color: #111;
 }
 
-.portal-btn {
-  background: linear-gradient(135deg, #1f2937, #374151);
-  border: 1px solid rgba(255, 255, 255, .1);
-  color: #fff;
-  font-weight: 700;
-  border-radius: .5rem;
-  padding: .45rem .9rem;
-}
-
-.portal-btn:hover {
-  color: #fff;
-  transform: translateY(-1px);
+.user-dropdown-item i {
+  color: #111;
 }
 
 @media (max-width: 767.98px) {

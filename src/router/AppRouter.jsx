@@ -3,7 +3,6 @@ import Layout from '../components/Layout/Layout'
 import { RequireAuth } from './RequireAuth'
 import LoginPage from '../pages/LoginPage'
 import ForgotPassword from '../pages/ForgotPassword'
-import VerifyResetOTP from '../pages/VerifyResetOTP'
 import ResetPassword from '../pages/ResetPassword'
 import VerifyAccount from '../pages/VerifyAccount'
 import NotFound from '../pages/NotFound'
@@ -32,7 +31,6 @@ export default function AppRouter() {
       <Route path="/security" element={<LoginPage role="security" />} />
       <Route path="/ceo" element={<LoginPage role="ceo" />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/verify-reset-otp" element={<VerifyResetOTP />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/verify-account" element={<VerifyAccount />} />
 

@@ -31,7 +31,6 @@ export function AuthProvider({ children }) {
   useEffect(() => { user ? localStorage.setItem('sc_user', JSON.stringify(user)) : localStorage.removeItem('sc_user') }, [user])
   useEffect(() => { localStorage.setItem('sc_filter_states', JSON.stringify(filterStates)) }, [filterStates])
 
-  // ── Data Loading ──
 
   const loadAllData = useCallback(async () => {
     if (!user || !getToken() || loadingRef.current) return
@@ -40,7 +39,7 @@ export function AuthProvider({ children }) {
       const [deptRes, locRes] = await Promise.all([safe(departmentService.getAll({ limit: 100 })), safe(locationService.getAll({ limit: 100 }))])
 
       const deptMap = Object.fromEntries((deptRes.data || []).map(d => [d.id, d]))
-      const locMap = Object.fromEntries((locRes.data || []).map(l => [l.id, l]))
+      const locMap  = Object.fromEntries((locRes.data || []).map(l => [l.id, l]))
       setDepartments(deptMap)
       setLocations(locMap)
 
@@ -83,13 +82,11 @@ export function AuthProvider({ children }) {
   useEffect(() => { if (user && getToken()) loadAllData() }, [user?.id, loadAllData])
   useEffect(() => { if (getToken() && user) authService.verifyToken().catch(() => { clearAuth(); setUser(null) }) }, [])
 
-  // ── Derived Data ──
 
-  const leaveRequests = useMemo(() => enrichLeaveRequests(rawLeaves, allUsersById), [rawLeaves, allUsersById])
+  const leaveRequests  = useMemo(() => enrichLeaveRequests(rawLeaves, allUsersById), [rawLeaves, allUsersById])
   const clockActivities = useMemo(() => attendanceToActivities(rawAttendance), [rawAttendance])
   const isOnManager = routeLocation.pathname.startsWith('/manager')
 
-  // ── Auth ──
 
   const login = async ({ email, password, roleHint }) => {
     const res = await authService.login(email, password)
@@ -105,13 +102,12 @@ export function AuthProvider({ children }) {
   }
 
   const logout = async () => {
-    try { await authService.logout() } catch { }
+    try { await authService.logout() } catch {}
     setUser(null); setAllUsersMap({}); setAllUsersById({}); setRawLeaves([]); setRawAttendance([])
     window.__sc_cache = {}
     navigate('/staff', { replace: true })
   }
 
-  // ── Clock ──
 
   const withReload = (fn) => async (...args) => { const r = await fn(...args); loadAllData(); return r }
 
@@ -128,13 +124,11 @@ export function AuthProvider({ children }) {
   const addLocation = async (locId) => { await attendanceService.clockOut(); const r = await attendanceService.clockIn(locId); setUser(p => p ? { ...p, currentLocationIds: [locId] } : p); loadAllData(); return { success: true, location: locations[locId]?.name } }
   const removeLocation = () => clockOut()
 
-  // ── Leave ──
 
   const submitLeaveRequest = async (d) => { const r = await leaveService.create({ type: d.type?.toLowerCase(), startDate: d.startDate, endDate: d.endDate, reason: d.reason }); loadAllData(); return r.data || r }
   const updateLeaveRequest = async (id, d) => { await leaveService.cancel(id); return submitLeaveRequest(d) }
   const processLeaveRequest = async (id, status, notes) => { const r = await (status === 'approved' ? leaveService.approve(id, notes) : leaveService.reject(id, notes)); loadAllData(); return r }
 
-  // ── User Management ──
 
   const registerStaff = async (d) => {
     const payload = compact({
@@ -163,7 +157,6 @@ export function AuthProvider({ children }) {
   const deactivateUser = (email) => setUserStatus(email, 'suspended')
   const reactivateUser = (email) => setUserStatus(email, 'active', { isVerified: true })
 
-  // ── Org CRUD (thin wrappers) ──
 
   const crudWith = (svc) => ({
     create: async (d) => { const r = await svc.create(d); await loadAllData(); return r.data || r },
@@ -171,16 +164,15 @@ export function AuthProvider({ children }) {
     remove: async (id) => { await svc.remove(id); await loadAllData(); return { success: true } },
   })
   const deptCrud = crudWith(departmentService)
-  const locCrud = crudWith(locationService)
+  const locCrud  = crudWith(locationService)
 
-  // ── Context Value ──
 
   const value = useMemo(() => ({
     user, login, logout,
-    forgotPassword: (e) => authService.forgotPassword(e),
-    resetPassword: (_e, t, p) => authService.resetPassword(t, p),
-    verifyOTP: (_e, otp) => authService.verifyEmail(otp),
-    resendOTP: (e) => authService.resendVerification(e),
+    forgotPassword: (email) => authService.forgotPassword(email),
+    resetPassword: (email, otp, password) => authService.resetPassword(email, otp, password),
+    verifyOTP: (email, otp) => authService.verifyEmail(email, otp),
+    resendOTP: (email) => authService.resendVerification(email),
     clockIn, clockOut, addLocation, removeLocation, isOnManager,
     leaveRequests, submitLeaveRequest, updateLeaveRequest, processLeaveRequest,
     rawLeaveRequests: leaveRequests, clockActivities, rawClockActivities: clockActivities,

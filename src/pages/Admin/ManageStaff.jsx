@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { getFullName } from '../../config/seedUsers'
-import { PageHeader, StatRow, DataTable, ConfirmModal } from '../../components/ui'
+import { PageHeader, StatRow, DataTable, ConfirmModal, DownloadFilteredButton } from '../../components/ui'
 
 export default function ManageStaff() {
   const { allUsers, updateStaff, deactivateUser, reactivateUser, locations, departments, saveFilterState, getFilterState, getUserById } = useAuth()
@@ -124,7 +124,24 @@ export default function ManageStaff() {
 
         {/* Table */}
         <div className="card">
-          <div className="card-header"><h6 className="mb-0">Staff Members</h6></div>
+          <div className="card-header d-flex justify-content-between align-items-center">
+            <h6 className="mb-0">Staff Members</h6>
+            <DownloadFilteredButton
+              rows={filtered}
+              filename="staff-list"
+              columns={[
+                { key: 'staffName', label: 'Name' },
+                { key: 'email', label: 'Email' },
+                { key: 'phone', label: 'Phone' },
+                { key: 'role', label: 'Role' },
+                { key: 'department', label: 'Department' },
+                { key: 'managerName', label: 'Reports To' },
+                { key: 'isManager', label: 'Is Manager' },
+                { key: 'isActive', label: 'Active' },
+                { key: 'jobTitle', label: 'Job Title' },
+              ]}
+            />
+          </div>
           <DataTable data={filtered} columns={columns} keyField="email" defaultSort={{ key: 'staffName', dir: 'asc' }} emptyIcon="fa-users" emptyText="No staff members found." onClear={clearFilters} />
         </div>
 

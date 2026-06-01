@@ -1,7 +1,4 @@
-/**
- * Pure data transformation functions — extracted from AuthContext for testability.
- * No React dependencies, no side effects.
- */
+// Pure data transformations used by AuthContext. No React, no side effects.
 import { getFullName } from '../config/helpers'
 
 const nameOf = (obj) => obj && typeof obj === 'object' ? obj.name : (obj || '')

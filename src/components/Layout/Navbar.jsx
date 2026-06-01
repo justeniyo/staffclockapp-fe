@@ -40,12 +40,6 @@ export default function AppNavbar({ onToggleMobile }) {
         <BSNavbar.Brand href="/" className="brand-big">StaffClock</BSNavbar.Brand>
 
         <div className="d-flex align-items-center gap-2 ms-auto">
-          {available.map(p => (
-            <Button key={p.key} className="portal-btn d-none d-lg-inline" onClick={() => navigate(p.path)}>
-              <i className={`fas ${p.icon} me-1`}></i>{p.label}
-            </Button>
-          ))}
-
           {user && (
             <div className="position-relative" ref={ref}>
               <div className="navbar-user-tag" onClick={() => setOpen(!open)}>

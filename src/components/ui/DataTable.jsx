@@ -1,18 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 
-/**
- * Reusable sortable + paginated data table.
- *
- * Props:
- *   data       - full array of objects
- *   columns    - [{ key, label, render?, sortable? }]
- *   keyField   - unique id field (default 'id')
- *   defaultSort - { key, dir: 'asc'|'desc' }
- *   pageSize   - initial page size (default 25)
- *   emptyIcon  - font-awesome class
- *   emptyText  - message when no data
- *   onClear    - callback for "Clear Filters" button
- */
+// Sortable + paginated data table. Columns: [{ key, label, render?, sortable? }].
 export default function DataTable({
   data, columns, keyField = 'id',
   defaultSort = { key: null, dir: 'desc' },
