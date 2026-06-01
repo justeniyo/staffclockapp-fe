@@ -42,6 +42,8 @@ export default function Sidebar({ variant = 'staff' }) {
         <S to="/admin/register-staff" icon="fa-user-plus">Register Staff</S>
         <S to="/admin/manage-staff" icon="fa-users-cog">Manage Staff</S>
         <S to="/admin/clock-activities" icon="fa-clock">Clock Activities</S>
+        <Section title="Reports" />
+        <S to="/admin/reports" icon="fa-chart-bar">Export Reports</S>
       </>}
 
       {user?.role === 'security' && <S to="/security-dashboard" icon="fa-tachometer-alt">Dashboard</S>}

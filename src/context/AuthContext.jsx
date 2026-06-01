@@ -40,7 +40,7 @@ export function AuthProvider({ children }) {
       const [deptRes, locRes] = await Promise.all([safe(departmentService.getAll({ limit: 100 })), safe(locationService.getAll({ limit: 100 }))])
 
       const deptMap = Object.fromEntries((deptRes.data || []).map(d => [d.id, d]))
-      const locMap  = Object.fromEntries((locRes.data || []).map(l => [l.id, l]))
+      const locMap = Object.fromEntries((locRes.data || []).map(l => [l.id, l]))
       setDepartments(deptMap)
       setLocations(locMap)
 
@@ -85,7 +85,7 @@ export function AuthProvider({ children }) {
 
   // ── Derived Data ──
 
-  const leaveRequests  = useMemo(() => enrichLeaveRequests(rawLeaves, allUsersById), [rawLeaves, allUsersById])
+  const leaveRequests = useMemo(() => enrichLeaveRequests(rawLeaves, allUsersById), [rawLeaves, allUsersById])
   const clockActivities = useMemo(() => attendanceToActivities(rawAttendance), [rawAttendance])
   const isOnManager = routeLocation.pathname.startsWith('/manager')
 
@@ -105,7 +105,7 @@ export function AuthProvider({ children }) {
   }
 
   const logout = async () => {
-    try { await authService.logout() } catch {}
+    try { await authService.logout() } catch { }
     setUser(null); setAllUsersMap({}); setAllUsersById({}); setRawLeaves([]); setRawAttendance([])
     window.__sc_cache = {}
     navigate('/staff', { replace: true })
@@ -156,12 +156,12 @@ export function AuthProvider({ children }) {
     await userService.update(u?.id || emailOrId, p); await loadAllData()
   }
 
-  const setUserStatus = async (email, status) => {
+  const setUserStatus = async (email, status, extraFields = {}) => {
     const u = allUsersMap[email]; if (!u) throw new Error('User not found')
-    await userService.update(u.id, { status }); await loadAllData(); return { success: true }
+    await userService.update(u.id, { status, ...extraFields }); await loadAllData(); return { success: true }
   }
   const deactivateUser = (email) => setUserStatus(email, 'suspended')
-  const reactivateUser = (email) => setUserStatus(email, 'active')
+  const reactivateUser = (email) => setUserStatus(email, 'active', { isVerified: true })
 
   // ── Org CRUD (thin wrappers) ──
 
@@ -171,7 +171,7 @@ export function AuthProvider({ children }) {
     remove: async (id) => { await svc.remove(id); await loadAllData(); return { success: true } },
   })
   const deptCrud = crudWith(departmentService)
-  const locCrud  = crudWith(locationService)
+  const locCrud = crudWith(locationService)
 
   // ── Context Value ──
 
