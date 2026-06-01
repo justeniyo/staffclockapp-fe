@@ -1,0 +1,27 @@
+/**
+ * Cloudflare Pages / Workers Static Assets configuration.
+ *
+ * Why this file exists:
+ *   The classic `public/_redirects` approach with `/* /index.html 200`
+ *   triggers a false-positive validation error ("Infinite loop detected")
+ *   in Cloudflare's new Workers + Static Assets system because the
+ *   automatic .html-stripping behaviour could theoretically loop.
+ *
+ *   The fix is to handle SPA fallback via wrangler config instead:
+ *     - `not_found_handling: "single-page-application"` serves index.html
+ *       for any unknown path (the SPA-router fallback).
+ *     - `html_handling: "none"` disables the .html-stripping that
+ *       triggers the false positive.
+ *
+ * Docs:
+ *   https://developers.cloudflare.com/workers/static-assets/binding/#html_handling
+ */
+{
+  "name": "staffclock",
+  "compatibility_date": "2025-01-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+    "html_handling": "none"
+  }
+}
