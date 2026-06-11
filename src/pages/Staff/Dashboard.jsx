@@ -32,9 +32,9 @@ export default function StaffDashboard() {
         ]} />
 
         {user.isManager && (
-          <div className="alert alert-info mb-4 d-flex justify-content-between align-items-center">
-            <div><i className="fas fa-users me-2"></i><strong>Manager Access Available</strong></div>
-            <Link to="/manager-dashboard" className="btn btn-info"><i className="fas fa-users-cog me-2"></i>Manager Portal</Link>
+          <div className="alert alert-info mb-4">
+            <i className="fas fa-users me-2"></i>
+            <strong>Manager access enabled.</strong> Use the Manager Portal link in the sidebar to switch.
           </div>
         )}
 

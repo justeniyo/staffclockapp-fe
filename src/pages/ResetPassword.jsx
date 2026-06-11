@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useSearchParams, useNavigate, Link } from 'react-router-dom'
+import { PasswordInput } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 
 // Step 2 of password reset: user pastes the 6-digit OTP from email and sets a new password.
@@ -90,15 +91,13 @@ export default function ResetPassword() {
 
             <div className="mb-3">
               <label className="form-label">New Password</label>
-              <input className="form-control" type="password" value={password} required
-                onChange={e => setPassword(e.target.value)} disabled={loading || !!success} />
+              <PasswordInput value={password} required autoComplete="new-password" onChange={e => setPassword(e.target.value)} disabled={loading || !!success} />
               <small className="text-muted">At least 8 characters, with upper, lower, number, and symbol.</small>
             </div>
 
             <div className="mb-3">
               <label className="form-label">Confirm Password</label>
-              <input className="form-control" type="password" value={confirm} required
-                onChange={e => setConfirm(e.target.value)} disabled={loading || !!success} />
+              <PasswordInput value={confirm} required autoComplete="new-password" onChange={e => setConfirm(e.target.value)} disabled={loading || !!success} />
             </div>
 
             {error && <div className="alert alert-danger py-2">{error}</div>}

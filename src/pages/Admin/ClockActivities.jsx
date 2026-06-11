@@ -39,7 +39,7 @@ export default function ClockActivities() {
       <div><div className="fw-semibold">{new Date(a.timestamp).toLocaleDateString()}</div><small className="text-muted">{new Date(a.timestamp).toLocaleTimeString()}</small></div>
     )},
     { key: 'staffName', label: 'Staff', render: (a) => <div><div className="fw-semibold">{a.staffName}</div><small className="text-muted">{a.staffEmail}</small></div> },
-    { key: 'department', label: 'Department', render: (a) => <span className="badge bg-light text-dark">{a.department}</span> },
+    { key: 'department', label: 'Department', render: (a) => <span className="tag tag-neutral">{a.department}</span> },
     { key: 'action', label: 'Action', render: (a) => (
       <span className={`badge ${actionBadge(a.action)}`}><i className={`fas ${actionIcon(a.action)} me-1`}></i>{a.action.replace('_', ' ').toUpperCase()}</span>
     )},

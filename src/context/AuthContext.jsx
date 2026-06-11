@@ -7,7 +7,6 @@ import { normalizeUser, attendanceToActivities, enrichLeaveRequests, resolveId, 
 
 export { getFullName, getUserInitials, isCEO, canAccessManagerPortal }
 
-const LEAVE_TYPES = ['Annual', 'Sick', 'Emergency']
 const LANDING = { ceo: '/ceo-dashboard', admin: '/admin-dashboard', security: '/security-dashboard', staff: '/clock' }
 
 // Wraps a data-load promise so one failed call doesn't break the rest of the page.
@@ -75,9 +74,9 @@ export function AuthProvider({ children }) {
         isPrivileged ? leaveService.getAll({ limit: 100 }) : leaveService.getMyLeaves({ limit: 100 }))
       setRawLeaves(leavesRes.data || [])
 
-      const isAdmin = user.role === 'admin' || isCEO(user)
+      const canSeeAllAttendance = ['admin', 'security'].includes(user.role) || isCEO(user)
       const attRes = await safe('attendance',
-        isAdmin ? attendanceService.getAll({ limit: 100 }) : attendanceService.getMyRecords({ limit: 100 }))
+        canSeeAllAttendance ? attendanceService.getAll({ limit: 100 }) : attendanceService.getMyRecords({ limit: 100 }))
       setRawAttendance(attRes.data || [])
 
       try {
@@ -143,9 +142,46 @@ export function AuthProvider({ children }) {
   const removeLocation = () => clockOut()
 
 
-  const submitLeaveRequest = async (d) => { const r = await leaveService.create({ type: d.type?.toLowerCase(), startDate: d.startDate, endDate: d.endDate, reason: d.reason }); loadAllData(); return r.data || r }
-  const updateLeaveRequest = async (id, d) => { await leaveService.cancel(id); return submitLeaveRequest(d) }
-  const processLeaveRequest = async (id, status, notes) => { const r = await (status === 'approved' ? leaveService.approve(id, notes) : leaveService.reject(id, notes)); loadAllData(); return r }
+  const pingNotifications = () => {
+    try { window.dispatchEvent(new Event('sc:notifications:refresh')) } catch { /* no-op */ }
+  }
+
+  const submitLeaveRequest = async (d) => {
+    const payload = {
+      type: d.type?.toLowerCase(),
+      startDate: d.startDate,
+      endDate: d.endDate,
+    }
+    if (d.reason && d.reason.trim()) payload.reason = d.reason.trim()
+    const r = await leaveService.create(payload)
+    loadAllData()
+    pingNotifications()
+    return r.data || r
+  }
+  const updateLeaveRequest = async (id, d) => {
+    const payload = {
+      type: d.type?.toLowerCase(),
+      startDate: d.startDate,
+      endDate: d.endDate,
+    }
+    if (d.reason && d.reason.trim()) payload.reason = d.reason.trim()
+    const r = await leaveService.update(id, payload)
+    loadAllData()
+    pingNotifications()
+    return r.data || r
+  }
+  const cancelLeaveRequest = async (id) => {
+    const r = await leaveService.cancel(id)
+    loadAllData()
+    pingNotifications()
+    return r.data || r
+  }
+  const processLeaveRequest = async (id, status, notes) => {
+    const r = await (status === 'approved' ? leaveService.approve(id, notes) : leaveService.reject(id, notes))
+    loadAllData()
+    pingNotifications()
+    return r
+  }
 
 
   const registerStaff = async (d) => {
@@ -192,7 +228,7 @@ export function AuthProvider({ children }) {
     verifyOTP: (email, otp) => authService.verifyEmail(email, otp),
     resendOTP: (email) => authService.resendVerification(email),
     clockIn, clockOut, addLocation, removeLocation, isOnManager,
-    leaveRequests, submitLeaveRequest, updateLeaveRequest, processLeaveRequest,
+    leaveRequests, submitLeaveRequest, updateLeaveRequest, cancelLeaveRequest, processLeaveRequest,
     rawLeaveRequests: leaveRequests, clockActivities, rawClockActivities: clockActivities,
     allUsers: allUsersMap, allUsersById, locations, departments,
     registerStaff, updateStaff, deactivateUser, reactivateUser,
@@ -203,7 +239,7 @@ export function AuthProvider({ children }) {
     getFilterState: (pg) => filterStates[pg] || {},
     getUserById: (id) => allUsersById[id] || null,
     getLocationById: (id) => locations[id] || null,
-    activeOTPs: {}, LEAVE_TYPES, refreshData: loadAllData,
+    activeOTPs: {}, refreshData: loadAllData,
   }), [user, isOnManager, leaveRequests, clockActivities, allUsersMap, allUsersById, locations, departments, filterStates, loadAllData])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

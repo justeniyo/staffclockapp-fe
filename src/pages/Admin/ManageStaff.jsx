@@ -58,13 +58,13 @@ export default function ManageStaff() {
     { key: 'staffName', label: 'Name', render: (u) => editingUser === u.email ? (
       <div className="row g-1"><div className="col-6"><input className="form-control form-control-sm" value={editForm.firstName || ''} onChange={e => setEditForm(p => ({ ...p, firstName: e.target.value }))} /></div>
       <div className="col-6"><input className="form-control form-control-sm" value={editForm.lastName || ''} onChange={e => setEditForm(p => ({ ...p, lastName: e.target.value }))} /></div></div>
-    ) : (<div><div className="fw-semibold">{u.staffName}</div>{u.isManager && <span className="badge bg-info">Manager</span>}</div>) },
+    ) : (<div><div className="fw-semibold">{u.staffName}</div>{u.isManager && <span className="tag tag-primary">Manager</span>}</div>) },
     { key: 'email', label: 'Contact', render: (u) => <small className="text-muted">{u.email}</small> },
     { key: 'department', label: 'Department', render: (u) => editingUser === u.email ? (
       <select className="form-select form-select-sm" value={editForm.department || ''} onChange={e => setEditForm(p => ({ ...p, department: e.target.value }))}>
         <option value="">Select</option>{departmentsList.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
       </select>
-    ) : <span className="badge bg-light text-dark">{u.department}</span> },
+    ) : <span className="tag tag-neutral">{u.department}</span> },
     { key: 'role', label: 'Role', render: (u) => editingUser === u.email ? (
       <select className="form-select form-select-sm" value={editForm.role || ''} onChange={e => setEditForm(p => ({ ...p, role: e.target.value }))}>
         <option value="staff">Staff</option><option value="admin">Admin</option><option value="security">Security</option><option value="ceo">CEO</option>
@@ -73,8 +73,8 @@ export default function ManageStaff() {
     { key: 'managerName', label: 'Reports To', render: (u) => <small className="text-muted">{u.managerName}</small> },
     { key: 'status', label: 'Status', sortable: false, render: (u) => (
       <div className="d-flex flex-column gap-1">
-        {!u.isActive && <span className="badge bg-danger">Inactive</span>}
-        {u.isClockedIn && u.isActive && <span className="badge bg-success">On Duty</span>}
+        {!u.isActive && <span className="tag tag-danger"><i className="fas fa-circle-xmark"></i>Inactive</span>}
+        {u.isClockedIn && u.isActive && <span className="tag tag-success"><i className="fas fa-circle-check"></i>On Duty</span>}
       </div>
     )},
     { key: 'actions', label: 'Actions', sortable: false, render: (u) => editingUser === u.email ? (

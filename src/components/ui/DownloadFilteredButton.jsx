@@ -39,7 +39,7 @@ export default function DownloadFilteredButton({ rows = [], columns, filename = 
   return (
     <button
       type="button"
-      className="btn btn-outline-dark btn-sm"
+      className="btn btn-warning btn-sm fw-semibold download-filtered-btn"
       onClick={handleClick}
       disabled={busy || rows.length === 0}
       title={rows.length === 0 ? 'No records to download' : `Download ${rows.length} record${rows.length === 1 ? '' : 's'} as CSV`}

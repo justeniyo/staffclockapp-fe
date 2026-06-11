@@ -16,6 +16,7 @@ import RegisterStaff from '../pages/Admin/RegisterStaff'
 import ManageStaff from '../pages/Admin/ManageStaff'
 import ClockActivities from '../pages/Admin/ClockActivities'
 import Reports from '../pages/Admin/Reports'
+import AdminLeaveRequests from '../pages/Admin/LeaveRequests'
 import SecurityDashboard from '../pages/Security/Dashboard'
 import CEODashboard from '../pages/CEO/Dashboard'
 
@@ -50,6 +51,7 @@ export default function AppRouter() {
         <Route path="/admin/manage-staff" element={L(<ManageStaff />)} />
         <Route path="/admin/clock-activities" element={L(<ClockActivities />)} />
         <Route path="/admin/reports" element={L(<Reports />)} />
+        <Route path="/admin/leave-requests" element={L(<AdminLeaveRequests />)} />
       </Route>
 
       {/* Security */}

@@ -11,4 +11,4 @@ export const getManagerHierarchy = (id) => {
   while (c?.managerId && chain.length < 10) { const m = u[c.managerId]; if (!m) break; chain.push(m); c = m }
   return chain
 }
-export const LEAVE_TYPES = ['Annual', 'Sick', 'Emergency']
+export const LEAVE_TYPES = []  // deprecated — import from src/config/leaveTypes instead

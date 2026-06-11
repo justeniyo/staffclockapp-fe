@@ -55,6 +55,12 @@ export function enrichLeaveRequests(leaves, usersById) {
   return leaves.map((req) => {
     const staff = req.user || usersById[req.userId] || null
     const reviewer = req.reviewer || (req.reviewedBy ? usersById[req.reviewedBy] : null)
+    const manager = staff?.manager || (staff?.managerId ? usersById[staff.managerId] : null)
+    const dayCount = req.totalDays != null
+      ? Number(req.totalDays)
+      : (req.startDate && req.endDate
+          ? Math.max(1, Math.ceil((new Date(req.endDate) - new Date(req.startDate)) / 86400000) + 1)
+          : 0)
     return {
       ...req,
       staffId: req.userId || staff?.id,
@@ -62,6 +68,8 @@ export function enrichLeaveRequests(leaves, usersById) {
       staffEmail: staff?.email || '',
       department: nameOf(staff?.department),
       manager: staff?.managerId || null,
+      managerName: manager ? getFullName(manager) : '',
+      dayCount,
       type: req.type ? req.type.charAt(0).toUpperCase() + req.type.slice(1) : req.type,
       processedByName: reviewer ? getFullName(reviewer) : null,
       requestDate: req.createdAt || req.requestDate,

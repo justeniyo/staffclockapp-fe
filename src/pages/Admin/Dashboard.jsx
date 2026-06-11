@@ -51,27 +51,6 @@ export default function AdminDashboard() {
           { icon: 'fa-clock', color: 'dark', value: d.todayAct, label: "Today's Activity" },
         ]} />
 
-        {/* Quick Actions */}
-        <div className="card mb-4">
-          <div className="card-header"><h6 className="mb-0"><i className="fas fa-bolt me-2"></i>Quick Actions</h6></div>
-          <div className="card-body">
-            <div className="row g-3">
-              {[
-                ['/admin/register-staff', 'fa-user-plus', 'Register Staff', 'primary'],
-                ['/admin/manage-staff', 'fa-users-cog', 'Manage Staff', 'info', d.unverified],
-                ['/admin/clock-activities', 'fa-clock', 'Clock Activities', 'success'],
-              ].map(([to, icon, label, v, badge]) => (
-                <div key={to} className="col-md-4">
-                  <Link to={to} className={`btn btn-outline-${v} w-100`}>
-                    <i className={`fas ${icon} me-2`}></i>{label}
-                    {badge > 0 && <span className="badge bg-warning text-dark ms-2">{badge}</span>}
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
         <div className="row g-4">
           {/* Role Distribution */}
           <div className="col-lg-4">
@@ -95,7 +74,7 @@ export default function AdminDashboard() {
               <div className="card-body">
                 {Object.entries(d.deptStats).map(([dept, s]) => (
                   <div key={dept} className="py-2 border-bottom">
-                    <div className="d-flex justify-content-between"><span className="fw-semibold">{dept}</span><span className="badge bg-light text-dark">{s.total}</span></div>
+                    <div className="d-flex justify-content-between"><span className="fw-semibold">{dept}</span><span className="tag tag-neutral">{s.total}</span></div>
                     <small className="text-muted">{s.active} active · {s.managers} manager{s.managers !== 1 ? 's' : ''}</small>
                   </div>
                 ))}

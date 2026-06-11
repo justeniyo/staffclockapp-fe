@@ -53,17 +53,6 @@ export default function CEODashboard() {
           </div>
         )}
 
-        <div className="card mb-4">
-          <div className="card-header"><h6 className="mb-0"><i className="fas fa-bolt me-2"></i>Executive Actions</h6></div>
-          <div className="card-body">
-            <div className="row g-3">
-              {[['/manager-dashboard','fa-users-cog','Manager Portal','primary'],['/staff/request-leave','fa-calendar-plus','Request Leave','secondary'],['/staff-dashboard','fa-user','Staff Portal','info'],['/clock','fa-clock','Clock In/Out','success']].map(([to,icon,lbl,v]) =>
-                <div key={to} className="col-md-3"><Link to={to} className={`btn btn-outline-${v} w-100`}><i className={`fas ${icon} me-2`}></i>{lbl}</Link></div>
-              )}
-            </div>
-          </div>
-        </div>
-
         <div className="row g-4">
           <div className="col-lg-6">
             <div className="card">
@@ -72,7 +61,7 @@ export default function CEODashboard() {
                 {Object.entries(d.deptStats).map(([dept, s]) => (
                   <div key={dept} className="d-flex justify-content-between align-items-center py-3 border-bottom">
                     <div><div className="fw-semibold">{dept}</div><small className="text-muted">{s.managers} mgr · {s.clockedIn} active</small></div>
-                    <div className="text-end"><span className="badge bg-primary">{s.total} staff</span><div className="small text-muted">{pct(s.clockedIn, s.total)}% active</div></div>
+                    <div className="text-end"><span className="tag tag-info">{s.total} staff</span><div className="small text-muted">{pct(s.clockedIn, s.total)}% active</div></div>
                   </div>
                 ))}
               </div>

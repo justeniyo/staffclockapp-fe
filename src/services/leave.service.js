@@ -21,6 +21,11 @@ const leaveService = {
     return api.post(`/leaves/${id}/cancel`);
   },
 
+  async update(id, data) {
+    // Owner edit of a pending request
+    return api.put(`/leaves/${id}`, data);
+  },
+
   // Admin / manager operations
   async getAll(params = {}) {
     const qs = new URLSearchParams(params).toString();

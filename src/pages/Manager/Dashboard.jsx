@@ -30,14 +30,6 @@ export default function ManagerDashboard() {
           { icon: 'fa-calendar-alt', color: 'info', value: team.total, label: 'Total Requests', extra: 'This Year' },
         ]} />
 
-        <div className="card mb-4"><div className="card-header"><h6 className="mb-0"><i className="fas fa-bolt me-2"></i>Quick Actions</h6></div>
-          <div className="card-body"><div className="row g-3">
-            {[['/manager/leave-requests','fa-calendar-check','Leave Requests','primary',team.pending.length],['/staff/request-leave','fa-calendar-plus','My Leave','secondary'],['/staff-dashboard','fa-user','Staff Portal','info'],['/clock','fa-clock','Clock In/Out','success']].map(([to,icon,lbl,v,badge]) =>
-              <div key={to} className="col-md-3"><Link to={to} className={`btn btn-outline-${v} w-100`}><i className={`fas ${icon} me-2`}></i>{lbl}{badge > 0 && <span className="badge bg-warning text-dark ms-2">{badge}</span>}</Link></div>
-            )}
-          </div></div>
-        </div>
-
         <div className="row g-4">
           <div className="col-lg-6">
             <div className="card"><div className="card-header"><h6 className="mb-0"><i className="fas fa-users me-2"></i>Team</h6></div>

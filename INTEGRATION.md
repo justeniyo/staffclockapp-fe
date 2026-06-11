@@ -94,7 +94,70 @@ VITE_API_URL=https://your-app.onrender.com/api
 
 See `DEPLOY.md` for the full Render + Neon + Cloudflare Pages walkthrough.
 
-## Common Tasks
+## Real-time Updates (Socket.IO)
+
+Pages stay in sync without manual refresh. When the backend changes attendance, leave, or user state, connected clients are notified through Socket.IO.
+
+### Setup
+
+Add `socket.io-client` to your frontend dependencies:
+
+```bash
+npm install socket.io-client
+```
+
+That's it — `AuthContext` automatically opens a connection after login (using the same JWT as the REST API) and tears it down on logout.
+
+### How it works
+
+The backend assigns each socket to rooms based on the user:
+
+- `user:{id}` — personal channel (the user's own tabs)
+- `role:admin`, `role:ceo`, `role:admins` (combined) — role-wide
+- `manager:{id}` — direct-report events for a manager
+- `location:{id}` — security guards at a site
+
+Server services emit events on state changes:
+
+| Event | Goes to |
+|---|---|
+| `attendance:clock-in` / `clock-out` / `break-*` | user + admins + manager + location |
+| `leave:created` | user + admins + manager |
+| `leave:approved` / `rejected` | user + admins + manager |
+| `user:updated` | user + admins |
+| `user:deactivated` | the affected user (then their sockets are force-closed) |
+| `shift:created` / `updated` / `cancelled` | assigned user + admins |
+
+### Subscribing in a component
+
+For most needs, AuthContext already refreshes data on these events automatically (with a 250ms debounce so a burst of events causes one refetch, not several). If you need finer-grained reactions (showing a toast, animating a row, playing a sound), use the `useSocketEvents` hook:
+
+```jsx
+import useSocketEvents from '../../hooks/useSocketEvents'
+import { EVENTS } from '../../services/socket'
+
+function ManagerLeaveRequests() {
+  useSocketEvents({
+    [EVENTS.LEAVE_CREATED]: (data) => {
+      toast.info(`New leave request from ${data.leave.user.firstName}`)
+    },
+  }, [/* deps */])
+
+  // ...
+}
+```
+
+### Live status indicator
+
+The navbar shows the current realtime connection state via `useSocketStatus()`:
+
+- **Live** (green dot, pulsing) — socket connected, updates flowing
+- **Connecting…** (amber) — handshake in progress or reconnecting
+- **Offline** (red) — disconnected (the app still works, but page data won't auto-update)
+
+The hook lives at `src/hooks/useSocketStatus.js` if you want to use it elsewhere.
+
+
 
 ### Async form handlers
 All mutating context methods return promises. Wrap in `try`/`catch`:

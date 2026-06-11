@@ -7,3 +7,4 @@ export { default as departmentService } from './department.service.js';
 export { default as locationService } from './location.service.js';
 export { default as shiftService } from './shift.service.js';
 export { default as reportService, triggerDownload } from './report.service.js';
+export { default as notificationService } from './notification.service.js';

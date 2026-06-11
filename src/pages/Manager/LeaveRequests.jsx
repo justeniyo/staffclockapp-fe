@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useAuth } from '../../context/AuthContext'
-import { PageHeader, DataTable, ConfirmModal, DownloadFilteredButton } from '../../components/ui'
+import { PageHeader, DataTable, ConfirmModal, DownloadFilteredButton, LeaveStatusBadge } from '../../components/ui'
+import { LEAVE_TYPES, getLeaveType } from '../../config/leaveTypes'
 
 export default function LeaveRequests() {
   const { leaveRequests, processLeaveRequest, user, allUsers, saveFilterState, getFilterState } = useAuth()
@@ -27,17 +28,31 @@ export default function LeaveRequests() {
 
   const handleProcess = (status) => { processLeaveRequest(selected.id, status, notes); setSelected(null); setNotes(''); setAction('') }
 
-  const statusBadge = (s) => ({ pending: 'bg-warning text-dark', approved: 'bg-success', rejected: 'bg-danger' }[s] || 'bg-secondary')
-  const typeIcon = (t) => ({ Annual: 'fa-calendar', Sick: 'fa-thermometer-half', Personal: 'fa-user', Emergency: 'fa-exclamation-triangle' }[t] || 'fa-question')
+  const typeIcon = (t) => ({
+    annual: 'fa-calendar',
+    sick: 'fa-thermometer-half',
+    personal: 'fa-user',
+    unpaid: 'fa-money-bill-wave',
+    maternity: 'fa-baby',
+    paternity: 'fa-baby-carriage',
+    bereavement: 'fa-heart-broken',
+    other: 'fa-question-circle',
+  }[t] || 'fa-question')
+  const typeLabel = (t) => getLeaveType(t)?.label || t
   const days = (s, e) => Math.ceil((new Date(e) - new Date(s)) / 86400000) + 1
 
   const columns = [
     { key: 'staffName', label: 'Employee', render: (r) => <div><div className="fw-semibold">{r.staffName}</div><small className="text-muted">{r.department}</small></div> },
-    { key: 'type', label: 'Type', render: (r) => <span className="badge bg-light text-dark"><i className={`fas ${typeIcon(r.type)} me-1`}></i>{r.type}</span> },
+    { key: 'type', label: 'Type', render: (r) => <span className="tag tag-neutral"><i className={`fas ${typeIcon(r.type)}`}></i>{typeLabel(r.type)}</span> },
     { key: 'startDate', label: 'Dates', render: (r) => <div><div className="fw-semibold">{r.startDate}</div><small className="text-muted">to {r.endDate}</small></div> },
-    { key: 'duration', label: 'Duration', sortable: false, render: (r) => <span className="badge bg-info">{days(r.startDate, r.endDate)}d</span> },
-    { key: 'status', label: 'Status', render: (r) => <span className={`badge ${statusBadge(r.status)}`}>{r.status}</span> },
-    { key: 'requestDate', label: 'Requested', render: (r) => <small>{new Date(r.requestDate).toLocaleDateString()}</small> },
+    { key: 'duration', label: 'Duration', sortable: false, render: (r) => {
+      const d = days(r.startDate, r.endDate)
+      return <span className="days-badge"><i className="fas fa-calendar-day"></i>{d} day{d === 1 ? '' : 's'}</span>
+    } },
+    { key: 'status', label: 'Status', render: (r) => <LeaveStatusBadge status={r.status} /> },
+    { key: 'requestDate', label: 'Requested', render: (r) => r.requestDate
+      ? <small>{new Date(r.requestDate).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</small>
+      : <span className="text-muted">—</span> },
     { key: 'actions', label: 'Actions', sortable: false, render: (r) => r.status === 'pending' ? (
       <div className="btn-group btn-group-sm">
         <button className="btn btn-outline-success" onClick={() => { setSelected(r); setAction('approve') }}><i className="fas fa-check"></i></button>
@@ -53,7 +68,7 @@ export default function LeaveRequests() {
         <div className="card mb-4"><div className="card-header"><div className="d-flex justify-content-between align-items-center"><h6 className="mb-0">Filters</h6><button className="btn btn-sm btn-outline-secondary" onClick={clearFilters}><i className="fas fa-times me-1"></i>Clear</button></div></div>
           <div className="card-body"><div className="row g-3">
             <div className="col-lg-3"><input className="form-control" placeholder="Employee name..." value={filters.search} onChange={e => setFilter('search', e.target.value)} /></div>
-            <div className="col-lg-2"><select className="form-select" value={filters.type} onChange={e => setFilter('type', e.target.value)}><option value="">All Types</option>{['Annual','Sick','Personal','Emergency'].map(t => <option key={t} value={t}>{t}</option>)}</select></div>
+            <div className="col-lg-2"><select className="form-select" value={filters.type} onChange={e => setFilter('type', e.target.value)}><option value="">All Types</option>{LEAVE_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}</select></div>
             <div className="col-lg-2"><select className="form-select" value={filters.status} onChange={e => setFilter('status', e.target.value)}><option value="all">All</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
             <div className="col-lg-5"><div className="input-group"><input type="date" className="form-control" value={filters.dateFrom} onChange={e => setFilter('dateFrom', e.target.value)} /><span className="input-group-text">to</span><input type="date" className="form-control" value={filters.dateTo} onChange={e => setFilter('dateTo', e.target.value)} /></div></div>
           </div></div>

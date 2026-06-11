@@ -249,11 +249,11 @@ export default function RegisterStaff() {
                         <div className="alert alert-info">
                           <h6 className="alert-heading"><i className="fas fa-sitemap me-2"></i>Reporting Hierarchy Preview</h6>
                           <div className="d-flex align-items-center">
-                            <span className="badge bg-primary me-2">{getFullName(formData)} ({formData.jobTitle || (formData.subRole === 'ceo' ? 'CEO' : formData.role)})</span>
+                            <span className="tag tag-primary me-2">{getFullName(formData)} ({formData.jobTitle || (formData.subRole === 'ceo' ? 'CEO' : formData.role)})</span>
                             {formData.managerId && (
-                              <><i className="fas fa-arrow-right mx-2"></i><span className="badge bg-success">{getManagerDisplayName(getUserById(formData.managerId))}</span></>
+                              <><i className="fas fa-arrow-right mx-2"></i><span className="tag tag-success">{getManagerDisplayName(getUserById(formData.managerId))}</span></>
                             )}
-                            {formData.subRole === 'ceo' && <span className="badge bg-warning text-dark ms-2">Top Level - No Manager</span>}
+                            {formData.subRole === 'ceo' && <span className="tag tag-warning ms-2">Top Level — No Manager</span>}
                           </div>
                         </div>
                       </div>
@@ -278,7 +278,7 @@ export default function RegisterStaff() {
                   <div className="col-md-6"><label className="form-label fw-bold">Full Name</label><div className="p-2 bg-light rounded">{confirmationData.firstName} {confirmationData.lastName}</div></div>
                   <div className="col-md-6"><label className="form-label fw-bold">Email</label><div className="p-2 bg-light rounded">{confirmationData.email}</div></div>
                   <div className="col-md-6"><label className="form-label fw-bold">Phone</label><div className="p-2 bg-light rounded">{confirmationData.phone}</div></div>
-                  <div className="col-md-6"><label className="form-label fw-bold">Role</label><div className="p-2 bg-light rounded"><span className="badge bg-primary me-2">{confirmationData.displayRole.toUpperCase()}</span>{confirmationData.isManager && <span className="badge bg-info">Manager</span>}</div></div>
+                  <div className="col-md-6"><label className="form-label fw-bold">Role</label><div className="p-2 bg-light rounded"><span className="tag tag-primary me-2">{confirmationData.displayRole.toUpperCase()}</span>{confirmationData.isManager && <span className="tag tag-info">Manager</span>}</div></div>
                   <div className="col-md-6"><label className="form-label fw-bold">Department</label><div className="p-2 bg-light rounded">{confirmationData.departmentName}</div></div>
                   <div className="col-md-6"><label className="form-label fw-bold">Reports To</label><div className="p-2 bg-light rounded">{confirmationData.managerName}</div></div>
                   <div className="col-md-6"><label className="form-label fw-bold">Location</label><div className="p-2 bg-light rounded">{confirmationData.locationName}</div></div>
@@ -341,7 +341,7 @@ export default function RegisterStaff() {
           <div className="modal show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
             <div className="modal-dialog"><div className="modal-content">
               <div className="modal-header"><h5 className="modal-title">Confirm Location</h5><button type="button" className="btn-close" onClick={() => setShowLocationConfirmation(false)}></button></div>
-              <div className="modal-body"><div className="p-2 bg-light rounded mb-3"><strong>{newLocation.name}</strong> <span className="badge bg-info">{newLocation.type}</span></div><div className="p-2 bg-light rounded">{newLocation.address || 'No address'}</div></div>
+              <div className="modal-body"><div className="p-2 bg-light rounded mb-3"><strong>{newLocation.name}</strong></div><div className="p-2 bg-light rounded">{newLocation.address || 'No address'}</div></div>
               <div className="modal-footer"><button className="btn btn-secondary" onClick={() => setShowLocationConfirmation(false)}>Cancel</button><button className="btn btn-success" onClick={confirmLocationCreation}>Create</button></div>
             </div></div>
           </div>

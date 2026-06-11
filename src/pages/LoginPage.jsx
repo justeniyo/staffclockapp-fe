@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { PasswordInput } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { isCEO } from '../config/seedUsers'
 
@@ -67,7 +68,7 @@ export default function LoginPage({ role = 'staff' }) {
             </div>
             <div className="mb-3">
               <label className="form-label">Password</label>
-              <input className="form-control" type="password" value={password} onChange={e => setPassword(e.target.value)} required disabled={loading} />
+              <PasswordInput value={password} onChange={e => setPassword(e.target.value)} required disabled={loading} autoComplete="current-password" />
             </div>
             {error && (
               <div className="alert alert-warning py-2"><i className="fas fa-exclamation-triangle me-2"></i>{error}</div>
@@ -84,7 +85,7 @@ export default function LoginPage({ role = 'staff' }) {
             </Link>
           </div>
 
-          {/* {otherPortals.length > 0 && (
+          {otherPortals.length > 0 && (
             <div className="text-center mt-2">
               <small className="text-muted">
                 Other portals:{' '}
@@ -98,7 +99,7 @@ export default function LoginPage({ role = 'staff' }) {
                 ))}
               </small>
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </div>
